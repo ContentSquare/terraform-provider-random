@@ -38,8 +38,63 @@ resource "aws_db_instance" "example" {
 ```
 ## Import
 
-Random Password can be imported by specifying the value of the string:
+Random Password can be imported by specifying the value of the string along with the applied settings.
+All settings are comma separated key=value 
 
 ```
-terraform import random_password.password securepassword
+terraform import random_password.password "securepassword length=14"
+```
+
+~> *Note*: `override_special` should be the last specified key if specified
+
+All settings from the schema could be provided 
+
+```
+terraform import random_password.password "password keepers=nil,length=8,special=true,upper=true,lower=true,number=true,min_numeric=0,min_upper=0,min_lower=0,min_special=0,override_special=_%@"
+```
+
+If not specified, then default settings are applied.
+
+```hcl
+resource "random_password" "test" {
+  length           = 16
+  special          = true
+  upper            = true
+  lower            = true
+  number           = true
+  min_numeric      = 0
+  min_upper        = 0
+  min_lower        = 0
+  min_special      = 0
+  override_special = ""
+}
+```
+
+~> *Note*: `keepers` will have a default value for a `map[string]interface{}`, `nil`
+
+When importing `keepers`, a jsonString should be then specified without spaces
+
+```
+terreform import random_password.test "234567 length=6,special=false,keepers=={\"bla\":\"dibla\",\"key\":\"value\"}"
+```
+
+for a matching resource:
+
+```hcl
+resource "random_password" "test" {
+  keepers          = {
+    bla: "dibla"
+    key: "value"
+  }
+  length           = 6
+  special          = false
+  upper            = true
+  lower            = true
+  number           = true
+  min_numeric      = 0
+  min_upper        = 0
+  min_lower        = 0
+  min_special      = 0
+  override_special = ""
+}
 ```
