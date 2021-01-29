@@ -72,7 +72,7 @@ jobs:
           GO111MODULE: on
           GOFLAGS: -mod=vendor
         run: |
-          make tests
+          make test
 
       - name: TF acceptance tests
         timeout-minutes: 10
